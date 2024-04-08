@@ -12,7 +12,12 @@ type EnvConfig = {
   UPSTASH_REDIS_REST_TOKEN: string;
   UPSTASH_REDIS_REST_URL: string;
 };
-app.use("/*", cors());
+app.use(
+  "/*",
+  cors({
+    origin: ["https://https://search-it-3j7j.vercel.app/"],
+  })
+);
 app.get("/search", async (c) => {
   try {
     const { UPSTASH_REDIS_REST_TOKEN, UPSTASH_REDIS_REST_URL } =
@@ -57,12 +62,11 @@ app.get("/search", async (c) => {
   } catch (error) {
     console.log(error);
     return c.json(
-      { results: [], message: "Something wnet wrong" },
+      { results: [], message: "Something went wrong" },
       { status: 404 }
     );
   }
 });
 
 export const GET = handle(app);
-export const POST = handle(app);
 export default app as never;

@@ -2,9 +2,9 @@
 
 import {
   Command,
+  CommandInput,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
@@ -19,41 +19,43 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!input) return setSearchResults(undefined);
-
-      const res = await fetch(
-        ` https://search-api.galaxym515fzbd.workers.dev/api/search?q=${input}`
-      );
-      const data = (await res.json()) as {
-        results: string[];
-        duration: number;
-      };
-      setSearchResults(data);
+      try {
+        if (!input) return setSearchResults(undefined);
+        const res = await fetch(
+          `https://search-api.galaxym515fzbd.workers.dev/api/search?q=${input}`
+        );
+        const data = (await res.json()) as {
+          results: string[];
+          duration: number;
+        };
+        setSearchResults(data);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchData();
   }, [input]);
 
   return (
-    <main className="h-screen w-screen grainy">
+    <div className="h-screen w-screen">
       <div className="flex flex-col gap-6 items-center pt-32 duration-500 animate-in animate fade-in-5 slide-in-from-bottom-2.5">
-        <h1 className="text-5xl tracking-tight font-bold">SpeedSearch ⚡</h1>
-        <p className="text-zinc-600 text-lg max-w-prose text-center">
-          A high-performance API built with Hono, Next.js and Cloudflare. <br />{" "}
-          Type a query below and get your results in miliseconds.
+        <h1 className="text-5xl tracking-tighter font-bold">Search-it</h1>
+        <p className="text-zinc-700 text-lg max-w-prose text-center">
+          A high performance API bulit with Hono, Next.js and Cloudflare
+          <br /> Type a query below and get your results in milliseconds
         </p>
-
         <div className="max-w-md w-full">
           <Command>
             <CommandInput
               value={input}
-              onValueChange={setInput}
+              onValueChange={(e) => setInput(e)}
               placeholder="Search countries..."
               className="placeholder:text-zinc-500"
             />
             <CommandList>
               {searchResults?.results.length === 0 ? (
-                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandEmpty>No results found</CommandEmpty>
               ) : null}
 
               {searchResults?.results ? (
@@ -72,11 +74,13 @@ export default function Home() {
 
               {searchResults?.results ? (
                 <>
-                  <div className="h-px w-full bg-zinc-200" />
-
+                  <div className="h-px w-full bg-zinc-200"></div>
                   <p className="p-2 text-xs text-zinc-500">
                     Found {searchResults.results.length} results in{" "}
-                    {searchResults?.duration.toFixed(0)}ms
+                    {searchResults?.duration
+                      ? searchResults.duration.toFixed(0)
+                      : null}
+                    ms
                   </p>
                 </>
               ) : null}
@@ -84,6 +88,6 @@ export default function Home() {
           </Command>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
