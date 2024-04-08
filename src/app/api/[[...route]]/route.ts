@@ -15,7 +15,7 @@ type EnvConfig = {
 app.use(
   "/*",
   cors({
-    origin: ["https://https://search-it-3j7j.vercel.app/"],
+    origin: ["https://search-it-3j7j.vercel.app/"],
   })
 );
 app.get("/search", async (c) => {
